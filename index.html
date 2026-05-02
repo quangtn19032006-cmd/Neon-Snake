@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Snake Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Màn hình Menu -->
+        <div id="menu-screen" class="screen active">
+            <div class="menu-container">
+                <div class="logo-container">
+                    <span class="icon-snake">🐍</span>
+                    <h1 class="glitch" data-text="NEON SNAKE">NEON SNAKE</h1>
+                </div>
+                <p class="subtitle">CYBERPUNK EDITION</p>
+                <p id="menu-hint">Chọn chế độ chơi bên dưới</p>
+                <div class="mode-buttons">
+                    <button id="btn-mode-classic" class="btn btn-mode-sel active">🐍 Cổ Điển</button>
+                    <button id="btn-mode-adventure" class="btn btn-mode-sel">⚔️ Phiêu Lưu</button>
+                </div>
+
+                <div id="classic-panel">
+                    <div class="difficulty-buttons">
+                        <button class="btn btn-easy" data-speed="150" data-level="Dễ">Dễ</button>
+                        <button class="btn btn-medium" data-speed="100" data-level="Vừa">Vừa</button>
+                        <button class="btn btn-hard" data-speed="100" data-level="Khó">Khó</button>
+                        <button class="btn btn-extreme" data-speed="100" data-level="Cực Khó">Cực Khó</button>
+                    </div>
+                </div>
+                <div id="adventure-panel" class="hidden">
+                    <button id="btn-start-adv" class="btn btn-extreme" style="font-size:1.2rem;padding:15px 40px">▶ Bắt Đầu Phiêu Lưu</button>
+                    <p style="color:#aaa;font-size:0.85rem;margin-top:10px">Dùng ← ↑ ↓ → để di chuyển · Space để bắn</p>
+                </div>
+
+                <div class="stats-board">
+                    <h3>Kỷ Lục</h3>
+                    <div id="stats-classic">
+                        <div class="stats-row">
+                            <span class="stat-color-easy">Dễ: <span id="stat-val-easy">0</span></span>
+                            <span class="stat-color-medium">Vừa: <span id="stat-val-medium">0</span></span>
+                            <span class="stat-color-hard">Khó: <span id="stat-val-hard">0</span></span>
+                            <span class="stat-color-extreme">Cực Khó: <span id="stat-val-extreme">0</span></span>
+                        </div>
+                    </div>
+                    <div id="stats-adventure" class="hidden">
+                        <div style="color:#00ffff;font-size:1.1rem;text-shadow:0 0 10px #00ffff">
+                            Level cao nhất đạt được: <span id="stat-val-adv">1</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="controls-hint">Sử dụng phím mũi tên ⬅️ ⬆️ ⬇️ ➡️ để di chuyển</p>
+            </div>
+        </div>
+
+        <!-- Màn hình Game -->
+        <div id="game-screen" class="screen">
+            <div class="header">
+                <div class="score-board">
+                    <div>Điểm: <span id="score">0</span></div>
+                    <div>Kỷ lục: <span id="high-score">0</span></div>
+                    <div class="level-indicator">Độ khó: <span id="current-level">Vừa</span></div>
+                </div>
+            </div>
+            <div class="canvas-container">
+                <canvas id="game-canvas" width="600" height="600"></canvas>
+                <button id="btn-pause-top" class="btn-pause-small pause-on-map">Ⅱ</button>
+                <!-- Adventure HUD -->
+                <div id="adv-hud" class="hidden" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;">
+                    <div id="adv-ammo" style="position:absolute;top:8px;right:12px;color:#00ffcc;font-size:1.3rem;font-weight:bold;">🔫 0</div>
+                    <div id="adv-level-badge" style="position:absolute;top:8px;left:12px;color:#fff;font-size:1rem;">Level 1 / 4</div>
+                    <div id="boss-hud" class="hidden" style="position:absolute;bottom:8px;left:5%;width:90%;text-align:center;">
+                        <div style="color:#ff3333;font-weight:bold;margin-bottom:4px;text-shadow:0 0 8px #ff3333">BOSS: MECHA SNAKE</div>
+                        <div style="background:rgba(0,0,0,0.8);border:2px solid #ff3333;border-radius:8px;overflow:hidden;height:18px;box-shadow:0 0 10px #ff3333">
+                            <div id="boss-hp-fill" style="height:100%;background:#ff3333;width:100%;transition:width 0.2s"></div>
+                        </div>
+                    </div>
+                    <div id="laser-warn" class="hidden" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,0,0,0.85);color:#fff;padding:15px 35px;border-radius:10px;font-size:1.3rem;font-weight:bold;box-shadow:0 0 30px #f00;animation:flash 0.4s infinite alternate">⚠️ LASER SẮP BẮN ⚠️</div>
+                </div>
+                <!-- Win Overlay -->
+                <div id="win-overlay" class="overlay hidden">
+                    <h2 style="color:#00ffcc">🏆 CHIẾN THẮNG!</h2>
+                    <p>Bạn đã hạ gục Boss!</p>
+                    <button id="btn-win-menu" class="btn">Về Menu</button>
+                </div>
+
+                <!-- Màn hình Game Over Overlay -->
+                <div id="game-over-overlay" class="overlay hidden">
+                    <h2>GAME OVER</h2>
+                    <p>Điểm của bạn: <span id="final-score">0</span></p>
+                    <button id="btn-restart" class="btn">Chơi Lại</button>
+                    <button id="btn-menu" class="btn btn-secondary">Về Menu</button>
+                </div>
+
+                <!-- Màn hình Tạm Dừng -->
+                <div id="pause-overlay" class="overlay hidden">
+                    <h2 class="glitch" data-text="PAUSED">PAUSED</h2>
+                    <div style="margin: 20px 0;">
+                        <button id="btn-resume" class="btn">Tiếp Tục</button>
+                        <button id="btn-pause-menu" class="btn btn-secondary">Về Menu</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="adventure.js"></script>
+</body>
+</html>
