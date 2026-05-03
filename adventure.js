@@ -280,6 +280,21 @@ document.getElementById('btn-mode-classic').addEventListener('click',function(){
     document.getElementById('stats-classic').classList.remove('hidden');
     document.getElementById('stats-adventure').classList.add('hidden');
 });
+function updateLevelButtons() {
+    const maxLvl = window.maxAdvLevelReached || 1;
+    for (let i = 1; i <= 4; i++) {
+        const btn = document.getElementById(`btn-lvl-${i}`);
+        if (!btn) continue;
+        if (i <= maxLvl) {
+            btn.classList.remove('locked');
+            btn.disabled = false;
+        } else {
+            btn.classList.add('locked');
+            btn.disabled = true;
+        }
+    }
+}
+
 document.getElementById('btn-mode-adventure').addEventListener('click',function(){
     this.classList.add('active');
     document.getElementById('btn-mode-classic').classList.remove('active');
@@ -287,9 +302,18 @@ document.getElementById('btn-mode-adventure').addEventListener('click',function(
     document.getElementById('adventure-panel').classList.remove('hidden');
     document.getElementById('stats-classic').classList.add('hidden');
     document.getElementById('stats-adventure').classList.remove('hidden');
+    updateLevelButtons(); // Cập nhật trạng thái các nút level
     if(typeof updateMenuStats === 'function') updateMenuStats();
 });
-document.getElementById('btn-start-adv').addEventListener('click',()=>{advLevel=1;startAdv();});
+
+document.querySelectorAll('.btn-lvl').forEach(btn => {
+    btn.addEventListener('click', () => {
+        if (btn.classList.contains('locked')) return;
+        sounds.click();
+        advLevel = parseInt(btn.getAttribute('data-level'));
+        startAdv();
+    });
+});
 document.getElementById('btn-win-menu').addEventListener('click',exitAdv);
 document.getElementById('btn-restart').addEventListener('click',()=>{if(advHud&&!advHud.classList.contains('hidden'))startAdv();});
 document.getElementById('btn-menu').addEventListener('click',()=>{if(advHud&&!advHud.classList.contains('hidden'))exitAdv();});

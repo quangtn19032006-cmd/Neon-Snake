@@ -410,3 +410,47 @@ canvas {
 .btn-mode-sel.active { background:#00ffcc; color:#000; border-color:#00ffcc; box-shadow:0 0 15px #00ffcc; }
 
 @keyframes flash { from{opacity:1} to{opacity:0.15} }
+
+/* Adventure Level Select */
+.adventure-levels {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 15px 0 5px 0;
+}
+
+.btn-lvl {
+    min-width: 85px;
+    padding: 12px 0;
+    font-size: 1.1rem;
+    background: rgba(0, 255, 204, 0.05);
+    border: 2px solid #00ffcc;
+    color: #00ffcc;
+    text-shadow: 0 0 5px #00ffcc;
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-lvl:hover {
+    background: #00ffcc;
+    color: #000;
+    box-shadow: 0 0 20px #00ffcc;
+    transform: translateY(-3px);
+}
+
+.btn-lvl.locked {
+    background: rgba(50, 50, 50, 0.3);
+    border-color: #444;
+    color: #666;
+    text-shadow: none;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.btn-lvl.locked:hover {
+    background: rgba(50, 50, 50, 0.3);
+    color: #666;
+    box-shadow: none;
+    transform: none;
+}
