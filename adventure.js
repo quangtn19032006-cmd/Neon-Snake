@@ -348,11 +348,9 @@ function startAdv(){
     moveTimer=0; fallingTimer=-2000; yellowTimer=0; // Thêm 2s an toàn khi bắt đầu
     
     if(advLevel===4){
-        currentZoom = 0.65; 
         boss={x:60,y:8,w:6,h:20,hp:100,maxHp:100,timer:0,attacks:0,state:'idle',laserY:18};
         bossHud.classList.remove('hidden');bossBar.style.width='100%';laserWarnEl.classList.add('hidden');
     }else{
-        currentZoom = 1.5;
         boss=null;bossHud.classList.add('hidden');laserWarnEl.classList.add('hidden');
     }
     isPaused = false;
@@ -369,10 +367,16 @@ function startAdv(){
     // Đổi nhãn Điểm thành Kẻ thù
     document.getElementById('score').parentElement.firstChild.textContent = "Kẻ thù: ";
     menuEl.classList.remove('active');gameEl.classList.add('active');
+    
+    // Tự động thu nhỏ và căn giữa để hiển thị toàn bộ bản đồ
+    currentZoom = Math.min(600 / (mapW * T), 600 / (mapH * T));
+    // Căn giữa bản đồ trên canvas
+    cam.x = -(600/currentZoom - mapW*T)/2;
+    cam.y = -(600/currentZoom - mapH*T)/2;
+    
     advRunning=true;
-    updateCam(); 
-    gameLoop();
     advInterval=setInterval(tick,TICK_MS);
+    gameLoop();
 }
 
 function stopAdv(){
@@ -383,10 +387,11 @@ function stopAdv(){
 }
 
 function gameLoop(){
-    if(!advRunning || isPaused)return;
-    updateCam();
+    if(!advRunning||isPaused)return;
+    
+    // Luôn giữ góc nhìn toàn cảnh đã tính toán
     draw();
-    advAnimReq = requestAnimationFrame(gameLoop);
+    advAnimReq=requestAnimationFrame(gameLoop);
 }
 
 function togglePauseAdv() {
