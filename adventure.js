@@ -253,7 +253,7 @@ let totalEnemies=0, killedEnemies=0;
 let cam={x:0,y:0},map2d=[],mapW=0,mapH=0;
 let advBgmActive = false;
 let isFirstDrop = true;
-window.maxAdvLevelReached = 1;
+window.maxAdvLevelReached = 4; // Đã mở khóa tất cả các màn chơi theo yêu cầu
 let moveTimer=0,fallingTimer=0,yellowTimer=0;
 let isTransitioning=false;
 let currentZoom=1.5;
