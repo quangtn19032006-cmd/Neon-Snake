@@ -331,9 +331,10 @@ function startAdv(){
     mapW=ld.mw;mapH=ld.mh;map2d=ld.tiles;
     snake=[{x:ld.sx,y:ld.sy},{x:ld.sx-1,y:ld.sy},{x:ld.sx-2,y:ld.sy}];
     curDir={x:0,y:0}; lastDir={x:1,y:0}; 
-    if(advLevel === 1) ammo = 5; // Cấp 5 đạn ở lv1
-    else if(advLevel === 4) ammo = 5; // Cấp 5 đạn ở màn Boss
-    else ammo = 0; // Các màn khác reset về 0 (hoặc giữ nếu muốn, nhưng user bảo lv4 reset và cấp 5)
+    // Chỉ reset/cấp lại đạn ở Level 1 hoặc Level 4
+    if(advLevel === 1 && ammo < 5) ammo = 5; 
+    else if(advLevel === 4) ammo = 5; 
+    // Các Level 2 và 3 sẽ giữ nguyên số đạn từ màn trước đó
     
     snakeBullets=[];enemyBullets=[];
     spikes=ld.spikes.map(s=>({...s}));
