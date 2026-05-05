@@ -368,11 +368,19 @@ function startAdv(){
     document.getElementById('score').parentElement.firstChild.textContent = "Kẻ thù: ";
     menuEl.classList.remove('active');gameEl.classList.add('active');
     
-    // Tự động thu nhỏ và căn giữa để hiển thị toàn bộ bản đồ
-    currentZoom = Math.min(600 / (mapW * T), 600 / (mapH * T));
-    // Căn giữa bản đồ trên canvas
-    cam.x = -(600/currentZoom - mapW*T)/2;
-    cam.y = -(600/currentZoom - mapH*T)/2;
+    // Thiết lập Zoom và Camera theo màn chơi
+    if (advLevel === 4) {
+        // Tự động thu nhỏ và căn giữa để hiển thị toàn bộ bản đồ (Chỉ cho Boss)
+        currentZoom = Math.min(600 / (mapW * T), 600 / (mapH * T));
+        cam.x = -(600/currentZoom - mapW*T)/2;
+        cam.y = -(600/currentZoom - mapH*T)/2;
+    } else {
+        // Zoom cận cảnh và bám theo cho các màn thường
+        currentZoom = 1.5;
+        // Khởi tạo cam tại vị trí rắn
+        cam.x = (snake[0].x * T) - (600/currentZoom)/2;
+        cam.y = (snake[0].y * T) - (600/currentZoom)/2;
+    }
     
     advRunning=true;
     advInterval=setInterval(tick,TICK_MS);
@@ -389,7 +397,22 @@ function stopAdv(){
 function gameLoop(){
     if(!advRunning||isPaused)return;
     
-    // Luôn giữ góc nhìn toàn cảnh đã tính toán
+    if (advLevel < 4) {
+        // Camera follow logic cho màn thường
+        const targetX = (snake[0].x - 300/(T*currentZoom)) * T;
+        const targetY = (snake[0].y - 300/(T*currentZoom)) * T;
+        cam.x += (targetX - cam.x) * 0.1;
+        cam.y += (targetY - cam.y) * 0.1;
+        
+        // Giới hạn camera trong bản đồ
+        const maxCamX = Math.max(0, mapW * T - 600/currentZoom);
+        const maxCamY = Math.max(0, mapH * T - 600/currentZoom);
+        cam.x = Math.max(0, Math.min(cam.x, maxCamX));
+        cam.y = Math.max(0, Math.min(cam.y, maxCamY));
+    } else {
+        // Giữ nguyên góc nhìn toàn cảnh cho màn Boss (đã tính ở startAdv)
+    }
+    
     draw();
     advAnimReq=requestAnimationFrame(gameLoop);
 }
