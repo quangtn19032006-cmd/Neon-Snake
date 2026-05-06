@@ -741,6 +741,20 @@ function nextLevel(){
         }
     }, 80);
 }
+
+function startAdvBGM(){
+    if(advBgmActive || !bgmEnabled)return; // Kiểm tra bgmEnabled từ script.js
+    advBgmActive=true;
+    const g=audioCtx.createGain();g.gain.value=0.03 * masterVolume;g.connect(audioCtx.destination); // Áp dụng masterVolume
+    const n=[110,130.81,164.81,130.81],d=0.15;let i=0;
+    function p(){
+        if(!advBgmActive)return;
+        const o=audioCtx.createOscillator();o.type='sawtooth';o.frequency.value=n[i];
+        o.connect(g);o.start();o.stop(audioCtx.currentTime+d);
+        i=(i+1)%n.length;setTimeout(p,d*1000);
+    }p();
+}
+
 function die(reason="Thất bại!"){
     stopAdv();
     isPaused = false;

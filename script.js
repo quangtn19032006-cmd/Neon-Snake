@@ -3,15 +3,20 @@ const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 let bgmOscillator = null;
 let bgmGainNode = null;
 let isBgmPlaying = false;
+// Cài đặt âm thanh
+let masterVolume = 0.5;
+let bgmEnabled = true;
+let sfxEnabled = true;
 
 function playTone(freq, type, duration, vol = 0.1, slideFreq = null) {
+    if (!sfxEnabled) return; // Kiểm tra nếu SFX bị tắt
     if (audioCtx.state === 'suspended') audioCtx.resume();
     const oscillator = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
     oscillator.type = type;
     oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
     if (slideFreq) oscillator.frequency.exponentialRampToValueAtTime(slideFreq, audioCtx.currentTime + duration);
-    gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gainNode.gain.setValueAtTime(vol * masterVolume, audioCtx.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
     oscillator.connect(gainNode);
     gainNode.connect(audioCtx.destination);
@@ -32,11 +37,11 @@ const sounds = {
 };
 
 function startBGM() {
-    if (isBgmPlaying) return;
+    if (isBgmPlaying || !bgmEnabled) return; // Kiểm tra nếu nhạc bị tắt
     if (audioCtx.state === 'suspended') audioCtx.resume();
     isBgmPlaying = true;
     bgmGainNode = audioCtx.createGain();
-    bgmGainNode.gain.value = 0.02;
+    bgmGainNode.gain.value = 0.02 * masterVolume; // Áp dụng âm lượng tổng
     bgmGainNode.connect(audioCtx.destination);
     const notes = [220, 261.63, 329.63, 261.63];
     let noteIndex = 0;
@@ -348,6 +353,19 @@ document.getElementById('btn-restart').addEventListener('click', () => {
     }
 });
 
+document.getElementById('btn-pause-restart').addEventListener('click', () => {
+    sounds.click();
+    isPaused = false;
+    document.getElementById('pause-overlay').classList.add('hidden');
+    // Nếu là Classic Mode
+    if (document.getElementById('adv-hud').classList.contains('hidden')) {
+        initGame(gameSpeed, currentLevelName);
+    } else {
+        // Nếu là Adventure Mode (Hàm startAdv đã có trong adventure.js)
+        if (typeof startAdv === 'function') startAdv();
+    }
+});
+
 document.getElementById('btn-menu').addEventListener('click', () => {
     sounds.click();
     gameOverOverlay.classList.add('hidden');
@@ -376,6 +394,50 @@ document.addEventListener('click', () => {
     if (menuScreen.classList.contains('active') && !isBgmPlaying) {
         startBGM();
     }
+});
+
+// Settings Logic
+const settingsPanel = document.getElementById('settings-panel');
+const classicPanel = document.getElementById('classic-panel');
+const advPanel = document.getElementById('adventure-panel');
+
+document.getElementById('btn-settings').addEventListener('click', () => {
+    sounds.click();
+    classicPanel.classList.add('hidden');
+    advPanel.classList.add('hidden');
+    settingsPanel.classList.remove('hidden');
+});
+
+document.getElementById('btn-settings-back').addEventListener('click', () => {
+    sounds.click();
+    settingsPanel.classList.add('hidden');
+    if (document.getElementById('btn-mode-classic').classList.contains('active')) {
+        classicPanel.classList.remove('hidden');
+    } else {
+        advPanel.classList.remove('hidden');
+    }
+});
+
+document.getElementById('volume-slider').addEventListener('input', (e) => {
+    masterVolume = e.target.value / 100;
+    if (bgmGainNode) {
+        bgmGainNode.gain.setTargetAtTime(0.02 * masterVolume, audioCtx.currentTime, 0.1);
+    }
+});
+
+document.getElementById('music-toggle').addEventListener('change', (e) => {
+    bgmEnabled = e.target.checked;
+    if (!bgmEnabled) {
+        stopBGM();
+        if (typeof stopAdvBGM === 'function') stopAdvBGM();
+    } else {
+        if (menuScreen.classList.contains('active')) startBGM();
+        // Đối với Adventure, nó sẽ tự bật khi tiếp tục hoặc bắt đầu
+    }
+});
+
+document.getElementById('sfx-toggle').addEventListener('change', (e) => {
+    sfxEnabled = e.target.checked;
 });
 
 // Vẽ màn hình trống ban đầu

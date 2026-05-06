@@ -57,11 +57,12 @@ body::before {
     display: none;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* Cho phép bắt đầu từ trên để không bị khuất */
     width: 100%;
     height: 100%;
     text-align: center;
     padding: 20px;
+    overflow-y: auto; /* Cho phép cuộn */
     animation: fadeIn 0.5s ease-in-out;
 }
 
@@ -84,7 +85,7 @@ body::before {
 
 .icon-snake {
     font-size: 3.5rem;
-    margin-bottom: -15px;
+    margin-bottom: 5px; /* Đổi từ -15px thành 5px để không bị đè */
     filter: drop-shadow(0 0 10px var(--primary-color));
     z-index: 2;
 }
@@ -111,6 +112,7 @@ h1 {
 .menu-container {
     background: rgba(0, 0, 0, 0.5);
     padding: 40px 30px;
+    margin: auto 0; /* Căn giữa dọc nhưng giữ an toàn */
     border-radius: 15px;
     border: 1px solid rgba(0, 255, 204, 0.3);
     box-shadow: 0 0 30px rgba(0, 255, 204, 0.1), inset 0 0 20px rgba(0, 0, 0, 0.8);
@@ -453,4 +455,37 @@ canvas {
     color: #666;
     box-shadow: none;
     transform: none;
+}
+
+/* Settings Styles */
+#settings-panel label {
+    color: #eee;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+}
+
+#volume-slider {
+    -webkit-appearance: none;
+    background: rgba(0, 255, 204, 0.2);
+    height: 6px;
+    border-radius: 5px;
+    outline: none;
+    margin: 0 10px;
+}
+
+#volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #00ffcc;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px #00ffcc;
+}
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #00ffcc;
 }

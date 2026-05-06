@@ -21,6 +21,7 @@
                 <div class="mode-buttons">
                     <button id="btn-mode-classic" class="btn btn-mode-sel active">🐍 Cổ Điển</button>
                     <button id="btn-mode-adventure" class="btn btn-mode-sel">⚔️ Phiêu Lưu</button>
+                    <button id="btn-settings" class="btn btn-secondary" style="flex:0; padding:10px 15px; font-size:1.2rem">⚙️</button>
                 </div>
 
                 <div id="classic-panel">
@@ -39,6 +40,23 @@
                         <button id="btn-lvl-4" class="btn btn-lvl locked" data-level="4">Lvl 4</button>
                     </div>
                     <p style="color:#aaa;font-size:0.85rem;margin-top:15px">Chọn màn chơi đã mở khóa · Space để bắn</p>
+                </div>
+
+                <div id="settings-panel" class="hidden" style="margin-top:20px; padding:20px; background:rgba(255,255,255,0.05); border-radius:10px; border:1px solid rgba(0,255,204,0.3)">
+                    <h3 style="color:#00ffcc; margin-bottom:20px">CÀI ĐẶT</h3>
+                    <div class="setting-item" style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center">
+                        <label>Âm lượng tổng</label>
+                        <input type="range" id="volume-slider" min="0" max="100" value="50" style="width:120px">
+                    </div>
+                    <div class="setting-item" style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center">
+                        <label>Nhạc nền</label>
+                        <input type="checkbox" id="music-toggle" checked>
+                    </div>
+                    <div class="setting-item" style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center">
+                        <label>Hiệu ứng âm thanh</label>
+                        <input type="checkbox" id="sfx-toggle" checked>
+                    </div>
+                    <button id="btn-settings-back" class="btn btn-hard" style="width:100%">Quay lại</button>
                 </div>
 
                 <div class="stats-board">
@@ -103,8 +121,9 @@
                 <!-- Màn hình Tạm Dừng -->
                 <div id="pause-overlay" class="overlay hidden">
                     <h2 class="glitch" data-text="PAUSED">PAUSED</h2>
-                    <div style="margin: 20px 0;">
+                    <div style="display: flex; flex-direction: column; gap: 12px; width: 200px; margin: 20px auto;">
                         <button id="btn-resume" class="btn">Tiếp Tục</button>
+                        <button id="btn-pause-restart" class="btn">Chơi Lại</button>
                         <button id="btn-pause-menu" class="btn btn-secondary">Về Menu</button>
                     </div>
                 </div>
